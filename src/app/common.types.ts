@@ -6,7 +6,7 @@ export type Student = {
 
 export type Session = {
   userId: string;
-  date: string;
+  date: Date;
   totalTime: string;
   completedTime: string;
   rounds: number;
