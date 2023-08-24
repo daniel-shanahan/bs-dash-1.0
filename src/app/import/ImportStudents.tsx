@@ -16,7 +16,7 @@ export default function ImportStudents() {
       const existingStudent = await db
         .collection("students")
         .getFirstListItem(`userId="${student.userId}"`, { $autoCancel: false });
-      console.log("existingStudent: ", existingStudent);
+      //console.log("existingStudent: ", existingStudent);
     } catch (err) {
       try {
         // Create student record
@@ -33,7 +33,7 @@ export default function ImportStudents() {
   return (
     <div>
       <label>
-        Choose File (*csv, xls, etc.)
+        Student login list (CSV):
         <input
           type="file"
           accept={acceptableCSVFileTypes}
