@@ -1,14 +1,13 @@
 export type Student = {
-  userId: string;
+  brainskillsId: string;
   firstName: string;
   lastName: string;
 };
 
 export type Session = {
-  userId: string;
+  studentId: string;
   date: Date;
-  totalTime: string;
-  completedTime: string;
+  totalSeconds: number;
+  completedSeconds: number;
   rounds: number;
-  activePercentage: number;
 };
