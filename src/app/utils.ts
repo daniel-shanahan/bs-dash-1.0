@@ -18,11 +18,8 @@ export const secondsToTime = (seconds: number): string => {
 };
 
 export const getActivePercentage = (
-  totalTime: string,
-  completedTime: string
+  totalSeconds: number,
+  completedSeconds: number
 ): number => {
-  const totalSeconds = timeToSeconds(totalTime);
-  const completedSeconds = timeToSeconds(completedTime);
-
   return Math.round((completedSeconds / totalSeconds) * 100);
 };

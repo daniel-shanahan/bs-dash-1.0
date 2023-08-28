@@ -63,7 +63,7 @@ const createSessionRecord = async (session: Session) => {
     const existingSession = await db
       .collection("sessions")
       .getFirstListItem(
-        `studentId="${session.studentId}" AND date="${session.date}"`,
+        `studentId="${session.studentId}" && date="${session.date}"`,
         { $autoCancel: false }
       );
     if (existingSession) {
