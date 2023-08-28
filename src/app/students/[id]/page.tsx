@@ -1,3 +1,4 @@
+import PageHeader from "@/app/(components)/PageHeader";
 import { getActivePercentage, secondsToTime } from "@/app/utils";
 import PocketBase from "pocketbase";
 
@@ -20,19 +21,20 @@ async function getStudentSessions(id: string) {
 export default async function StudentPage({ params }: any) {
   const student = await getStudent(params.id);
   const sessions = await getStudentSessions(params.id);
+  const studentName = `${student.firstName} ${student.lastName}`;
 
   return (
-    <div className="flex flex-col items-center justify-between">
-      <h1 className="text-4xl font-bold pb-10">
-        {student.firstName} {student.lastName}
-      </h1>
-      <h2 className="text-2xl font-bold pb-4">Sessions</h2>
-      <div className="flex flex-col gap-5">
-        {sessions.items.map((session: any) => (
-          <SessionListItem key={session.id} session={session} />
-        ))}
+    <>
+      <PageHeader title={studentName} />
+      <div className="flex flex-col items-center gap-8">
+        <h2 className="text-2xl font-bold pb-4">Sessions</h2>
+        <div className="flex flex-col gap-5">
+          {sessions.items.map((session: any) => (
+            <SessionListItem key={session.id} session={session} />
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

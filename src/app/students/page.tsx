@@ -1,5 +1,6 @@
 import Link from "next/link";
 import PocketBase from "pocketbase";
+import PageHeader from "../(components)/PageHeader";
 
 export const dynamic = "auto",
   dynamicParams = true,
@@ -20,14 +21,14 @@ export default async function StudentsPage() {
   const students = await getStudents();
 
   return (
-    <div className="flex flex-col items-center justify-between">
-      <h1 className="text-4xl font-bold">Students</h1>
-      <div className="flex flex-col gap-5">
+    <>
+      <PageHeader title="Students" />
+      <div className="flex flex-col items-center gap-5">
         {students.map((student: any) => (
           <StudentListItem key={student.id} student={student} />
         ))}
       </div>
-    </div>
+    </>
   );
 }
 
