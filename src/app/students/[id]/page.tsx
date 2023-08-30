@@ -1,5 +1,6 @@
 import PageHeader from "@/app/(components)/PageHeader";
-import { getActivePercentage, secondsToTime } from "@/app/utils";
+import TotalSessions from "@/app/(components)/TotalSessions";
+import { getActivePercentage, getBgColor, secondsToTime } from "@/app/utils";
 import PocketBase from "pocketbase";
 
 async function getStudent(id: string) {
@@ -21,19 +22,33 @@ async function getStudentSessions(id: string) {
 export default async function StudentPage({ params }: any) {
   const student = await getStudent(params.id);
   const sessions = await getStudentSessions(params.id);
+  console.log(sessions);
   const studentName = `${student.firstName} ${student.lastName}`;
+  const noSessions = sessions.items.length === 0;
 
   return (
     <>
       <PageHeader title={studentName} />
-      <div className="flex flex-col items-center gap-8">
-        <h2 className="text-2xl font-bold pb-4">Sessions</h2>
-        <div className="flex flex-col gap-5">
-          {sessions.items.map((session: any) => (
-            <SessionListItem key={session.id} session={session} />
-          ))}
+      {noSessions ? (
+        <div className="flex flex-col items-center justify-center h-96">
+          <p className="text-2xl font-bold">No sessions yet</p>
         </div>
-      </div>
+      ) : (
+        <div className="flex flex-col items-center gap-8">
+          <div>
+            <h2 className="text-2xl font-bold pb-4 text-center">Totals</h2>
+            <TotalSessions sessions={sessions.items} />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold pb-4 text-center">Sessions</h2>
+            <div className="flex flex-col gap-5">
+              {sessions.items.map((session: any) => (
+                <SessionListItem key={session.id} session={session} />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
@@ -44,22 +59,31 @@ function SessionListItem({ session }: any) {
   const totalTime = secondsToTime(totalSeconds);
   const completedTime = secondsToTime(completedSeconds);
   const activePercentage = getActivePercentage(totalSeconds, completedSeconds);
+  const bgColor = getBgColor(activePercentage);
 
   return (
-    <div className="flex flex-row items-center justify-between gap-4 p-5 border rounded-md shadow-md hover:shadow-lg text-md">
+    <div
+      className={`flex flex-row items-center justify-between gap-8 p-5 border rounded-md shadow-md hover:shadow-lg text-md text-center ${bgColor}`}
+    >
       <div className="flex flex-col">
         <p>{sessionDate.toDateString()}</p>
         <p className="text-sm">{sessionDate.toLocaleTimeString()}</p>
       </div>
-      <p className="text-lg font-semibold">{activePercentage}% Active</p>
-      <p>{rounds} Rounds</p>
       <div className="flex flex-col">
         <p>Total Time</p>
         <p>{totalTime}</p>
       </div>
       <div className="flex flex-col">
-        <p>Completed Time</p>
+        <p>Completed</p>
         <p>{completedTime}</p>
+      </div>
+      <div className="flex flex-col">
+        <p>Rounds</p>
+        <p>{rounds}</p>
+      </div>
+      <div className="flex flex-col font-semibold">
+        <p>Active</p>
+        <p className="text-lg">{activePercentage}%</p>
       </div>
     </div>
   );
