@@ -9,7 +9,7 @@ export const dynamic = "auto",
   runtime = "nodejs",
   preferredRegion = "auto";
 
-async function getStudents() {
+async function getAllStudents() {
   const db = new PocketBase("http://127.0.0.1:8090");
   const students = await db
     .collection("students")
@@ -17,9 +17,30 @@ async function getStudents() {
   return students;
 }
 
-export default async function StudentsPage() {
-  const students = await getStudents();
+async function studentHasSessions(student: any) {
+  const db = new PocketBase("http://127.0.0.1:8090");
 
+  try {
+    const session = await db
+      .collection("sessions")
+      .getFirstListItem(`studentId="${student.id}"`, {
+        $autoCancel: false,
+      });
+    return true;
+  } catch (err) {
+    return false;
+  }
+}
+
+async function getActiveStudents() {
+  const allStudents = await getAllStudents();
+  const promises = allStudents.map(studentHasSessions);
+  const results = await Promise.all(promises);
+  return allStudents.filter((student, index) => results[index]);
+}
+
+export default async function StudentsPage() {
+  const students = await getActiveStudents();
   return (
     <>
       <PageHeader title="Students" />
@@ -37,7 +58,7 @@ function StudentListItem({ student }: any) {
 
   return (
     <Link href={`/students/${id}`}>
-      <div className="flex items-center justify-between w-96 p-5 border rounded-md shadow-md hover:shadow-lg text-lg">
+      <div className="flex items-center justify-between w-96 p-3 border rounded-md shadow-md hover:shadow-lg text-lg">
         {firstName} {lastName}
       </div>
     </Link>
